@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body>
+    <h1 id="postTitle">Post Title</h1>
+    <span id="postDate">2020-10-10</span>
+     
+
+
+
+
+
+    <script>
+        //    function parseMarkdown(markdown) {
+        //         let metadata = {};
+        //         const lines = markdown.split('\n');
+        //         lines.forEach(line => {
+        //             if(line == "---e") {
+        //                 console.log(line);
+        //                 return;
+        //             }
+        
+        //             if(line != "---")
+        //             {
+                        
+        //                 const [key, value] = line.split(':');
+        //                 console.log([key, value]);
+        //                 metadata[key] = value;
+        //             }
+        //         });
+        
+        //         const content = markdown.replace(/^---[\s\S]*?---e/gm, '');
+        //         // console.log(content);
+        //         return { metadata, content };
+        //     }
+           function parsePost(post) {
+                const content = post.replace(/^\n---[\s\S]*?---e/,'');
+                return content;
+            }
+        
+        
+           function parsePostInfo(post) {
+                let metadata = {};
+                const lines = post.split('\n');
+                for (let i = 0; i < lines.length; i++)
+                {
+                    if(lines[i] == "---e") {
+                        
+                        break;
+                    }
+        
+                    if(/@/.test(lines[i]))
+                    {
+                        const [key, value] = lines[i].split('@');
+                        metadata[key] = value;
+                    }
+                }
+        
+                return metadata;
+            }
+        
+        
+            function loadPost(file)
+            {
+
+                //============ AJAX with xhr ============//
+                const xhr = new XMLHttpRequest();
+
+                xhr.onload = function () {
+                    if (this.status == 200) {
+                        const post    = xhr.responseText;
+                        const content = parsePost(post);
+                        const mtd     = parsePostInfo(post);
+
+                        const postTitle = document.getElementById("postTitle");
+                        const postDate  = document.getElementById("postDate");
+                        
+                        
+                        console.log(mtd["title"]);
+                        postTitle.innerHTML = mtd["title"];
+                        postDate.innerHTML  = mtd["date"];
+
+                    }
+                    else {
+                        console.warn("Failure status code not 200");
+                    }
+                }
+                xhr.open('get', file, true);
+                xhr.send();
+                //============ End AJAX with xhr ============//
+
+               
+        
+        
+            }
+        
+        // Example Markdown content
+const markdownContent = `
+---
+title@My First Blog Post
+date@2024-03-01
+category@tag1
+cover@https://lh3.googleusercontent.com/pw/AP1GczPz7yr6sFXcmPQ0v09wu_0vKTXzinZlX7GRy61bU2wVieHmUKvRDVS555TL6ojw1Mf4eQ3XKoFaOM3brjeKjRAwlF-YBI61N8JnaoIpkX1EmA4G5So30WP__UE_dDv49AKWhCBk-Emx-QA732Y0yf41zV8rdM6elWZaQtmT4-iUooUeYslgGP7ux_a2oev82KYNrijkG69HJI2KZbP1IAHoWHwk5_0k4BY_TL_3QdWh1NifQCPHu0B9CwbKgbGDRA6HNgLcyhF8OXXzni9lWrkbUPOe_XLETFx9qEJPRGK4ALFfaX5GCscjXRYf0qVV_hKX-LugsXWfLF5rSrjfPjADC-n5R-10PrsEt7wxyKMcoPqOXDffLvw6xEbuKkq7WTldlj2SEoo3hhYQX6VsC0rAStKB0zUW8qspT5Tqi9HhhjZxTora5_kESuufek0cG1wxiTIdjnQkInD4bhNdVfXX0hBPGwwRhPT-E4VQKW8J3Fw33-OglVyhjd_yqoN80neCwJIy6b2jdlww8YDV1OKACr8TVUpIPxZQhEvFJHXzO-wibXm7rfnxk8pk03O3HKLPNy5aJGTcGoa1E6kVZR210NwSZl-WSGv4YXFQcFwJsHq-bgRjEnQ1a2m2wXbA7TRNE7pMfiQGNrHrTPecx139PPtzsamhzwGbCH5-76AIFEPv1i_6xj7LCdg2GNOoDgMfzyhJ2gdodzTGeTZ65DP_7d39B5U5E2zQcGaI1Orc1ZRbz85wZ1FLYW3Po3yPOgNsOONE7Z7-ikJWeAupL1K2PrrNAkfl9Vs3pl4yRKzKutHE53TJ-2db-GhPC4a1eURw29HfPeRgfli53rvyNkM-5rQyeAurZUKGgIwrVIKN7uwPGF_bw94VHVd8mlP0xjLTROFfPsEZVtfQhIV46Eo3=w646-h970-s-no-gm?authuser=0
+---e
+
+# My First Blog Post
+
+This is the content of my first blog post.
+`;
+
+// Parse Markdown and store metadata and content into JavaScript object
+const content = parsePost(markdownContent);
+const mtd     = parsePostInfo(markdownContent);
+console.log(mtd);
+console.log('Content:', content);
+// console.log('Content:', content);
+loadPost("../posts/2024-03-02-tag1.txt");
+        
+        
+            </script>
+</body>
+</html>
